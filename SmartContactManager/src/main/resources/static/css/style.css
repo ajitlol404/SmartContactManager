@@ -1,0 +1,24 @@
+body{
+	background: #e2e2e2;
+}
+
+.bg-primary{
+	background: #009688;
+}
+
+.banner{
+	width: 100%;
+	height: 91vh;
+	background: url("../image/wp4863801.jpg");
+	background-size: cover;
+}
+
+.my-card{
+	padding: 20px;
+	background: #ffffff;
+}
+
+.form-check {
+   
+    padding-left: 0.25rem;
+}

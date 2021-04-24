@@ -1,15 +1,16 @@
 package com.springboot.Entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import javax.persistence.ManyToOne;
-
-
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "Contact")
 public class Contact 
 {
 	@Id
@@ -21,6 +22,7 @@ public class Contact
 	private String email;
 	private String phone;
 	private String image;
+	@Column(length = 500)
 	private String description;
 	
 	@ManyToOne
