@@ -1,5 +1,7 @@
 package com.springboot.Controller;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.springboot.Entity.User;
+import com.springboot.Helper.Message;
 import com.springboot.Repository.UserRepository;
 
 @Controller
@@ -40,20 +43,33 @@ public class HomeController
 	}
 	
 	@PostMapping("/do_register")
-	public String doregister(@ModelAttribute("user") User user,@RequestParam(value = "agreement",defaultValue = "false")boolean agreement,Model model)
+	public String doregister(@ModelAttribute("user") User user,@RequestParam(value = "agreement",defaultValue = "false")boolean agreement,Model model,HttpSession session)
 	{
-		if(!agreement)
-		{
-			System.out.println("You have not agreed the term and condition.");
+		try {
+
+			if(!agreement)
+			{
+				System.out.println("You have not agreed the term and condition.");
+				throw new Exception("You have not agreed the term and condition.");
+			}
+			user.setRole("ROLE_USER");
+			user.setEnabled(true);
+			
+			User result = this.userrepo.save(user);
+		
+			System.out.println("User details :- "+user);
+			
+			model.addAttribute("user", new User());
+			session.setAttribute("message", new Message("Successfully Registered!!", "alert-success"));
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("user", user);
+			session.setAttribute("message", new Message("Something Went Wrong !!"+ e.getMessage(),"alert-danger"));
+			return "signup";
 		}
-		user.setRole("ROLE_USER");
-		user.setEnabled(true);
 		
-		User result = this.userrepo.save(user);
-	
-		System.out.println("User details :- "+user);
 		
-		model.addAttribute("user", user);
 		return "signup";
 	}
 }
