@@ -13,12 +13,19 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.validator.constraints.NotBlank;
+
+
+
+
 @Entity
 @Table(name = "User")
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long uid;
+	
+	@NotBlank(message = "Name cannot be blank.")
 	private String name;
 	@Column(unique = true)
 	private String email;

@@ -1,10 +1,14 @@
 package com.springboot.Controller;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +24,8 @@ public class HomeController
 	@Autowired
 	private UserRepository userrepo;
 	
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
 	@GetMapping("/")
 	public String home(Model model)
 	{
@@ -43,7 +49,7 @@ public class HomeController
 	}
 	
 	@PostMapping("/do_register")
-	public String doregister(@ModelAttribute("user") User user,@RequestParam(value = "agreement",defaultValue = "false")boolean agreement,Model model,HttpSession session)
+	public String doregister(@Valid @ModelAttribute("user") User user,BindingResult bresult,@RequestParam(value = "agreement",defaultValue = "false")boolean agreement,Model model,HttpSession session)
 	{
 		try {
 
@@ -52,8 +58,18 @@ public class HomeController
 				System.out.println("You have not agreed the term and condition.");
 				throw new Exception("You have not agreed the term and condition.");
 			}
+			
+			if(bresult.hasErrors())
+			{
+				System.out.println(bresult.toString());
+				model.addAttribute("user", user);
+				return "signup";
+			}
+			
 			user.setRole("ROLE_USER");
 			user.setEnabled(true);
+			user.setImageUrl("degau.jpg");
+			user.setPassword(passwordEncoder.encode(user.getPassword()));
 			
 			User result = this.userrepo.save(user);
 		
