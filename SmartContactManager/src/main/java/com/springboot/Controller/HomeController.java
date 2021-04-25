@@ -22,10 +22,12 @@ import com.springboot.Repository.UserRepository;
 public class HomeController 
 {
 	@Autowired
-	private UserRepository userrepo;
+	private BCryptPasswordEncoder passwordEncoder;
 	
 	@Autowired
-	private BCryptPasswordEncoder passwordEncoder;
+	private UserRepository userrepo;
+	
+
 	@GetMapping("/")
 	public String home(Model model)
 	{

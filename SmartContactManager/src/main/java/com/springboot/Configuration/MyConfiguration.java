@@ -13,6 +13,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @Configuration
 @EnableWebSecurity
 public class MyConfiguration extends WebSecurityConfigurerAdapter{
+	@Bean
+	public BCryptPasswordEncoder passwordEncoder()
+	{
+		return new BCryptPasswordEncoder();
+	}
 
 	@Bean
 	public UserDetailsService getUserDetailsService()
@@ -20,11 +25,7 @@ public class MyConfiguration extends WebSecurityConfigurerAdapter{
 		return new UserDetailsServiceImpl();
 	}
 	
-	@Bean
-	public BCryptPasswordEncoder passwordEncoder()
-	{
-		return new BCryptPasswordEncoder();
-	}
+	
 	
 	@Bean
 	public DaoAuthenticationProvider authenticationProvider()

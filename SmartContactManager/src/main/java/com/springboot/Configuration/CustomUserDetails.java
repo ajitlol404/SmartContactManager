@@ -13,7 +13,6 @@ public class CustomUserDetails implements UserDetails
 {
 	private User user;
 
-
 	public CustomUserDetails(User user) {
 		super();
 		this.user = user;
@@ -42,7 +41,6 @@ public class CustomUserDetails implements UserDetails
 
 	@Override
 	public boolean isAccountNonExpired() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
