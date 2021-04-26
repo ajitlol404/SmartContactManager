@@ -36,7 +36,7 @@ public class User {
 	@Column(length = 200)
 	private String about;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
 	private List<Contact> contact = new ArrayList<>();
 
 	public User() {
