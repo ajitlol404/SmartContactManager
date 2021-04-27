@@ -47,7 +47,14 @@ public class MyConfiguration extends WebSecurityConfigurerAdapter{
 		
 		http.authorizeRequests().antMatchers("/admin/**").hasRole("ADMIN")
 		.antMatchers("/user/**").hasRole("USER")
-		.antMatchers("/**").permitAll().and().formLogin().loginPage("/signin").and().csrf().disable();
+		.antMatchers("/**").permitAll()
+		.and().
+		formLogin().loginPage("/signin")
+		.loginProcessingUrl("/dologin")//if i change the url then th action will also changed
+		.defaultSuccessUrl("/user/index")
+		.failureUrl("/loginfail")
+		.and()
+		.csrf().disable();
 		
 	}	
 }
