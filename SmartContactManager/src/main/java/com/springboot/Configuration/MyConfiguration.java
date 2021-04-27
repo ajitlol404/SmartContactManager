@@ -50,9 +50,9 @@ public class MyConfiguration extends WebSecurityConfigurerAdapter{
 		.antMatchers("/**").permitAll()
 		.and().
 		formLogin().loginPage("/signin")
-		.loginProcessingUrl("/dologin")//if i change the url then th action will also changed
+//		.loginProcessingUrl("/dologin")//if i change the url then th action will also changed
 		.defaultSuccessUrl("/user/index")
-		.failureUrl("/loginfail")
+//		.failureUrl("/loginfail") if i use this the it login fail will redirect to some other page.
 		.and()
 		.csrf().disable();
 		
