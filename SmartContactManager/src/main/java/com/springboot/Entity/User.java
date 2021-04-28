@@ -24,8 +24,7 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long uid;
-	
-	@NotBlank(message = "Name cannot be blank.")
+
 	private String name;
 	@Column(unique = true)
 	private String email;
@@ -114,13 +113,5 @@ public class User {
 	public void setContact(List<Contact> contact) {
 		this.contact = contact;
 	}
-
-	@Override
-	public String toString() {
-		return "User [uid=" + uid + ", name=" + name + ", email=" + email + ", password=" + password + ", role=" + role
-				+ ", imageUrl=" + imageUrl + ", enabled=" + enabled + ", about=" + about + ", contact=" + contact + "]";
-	}
-	
-	
 
 }
