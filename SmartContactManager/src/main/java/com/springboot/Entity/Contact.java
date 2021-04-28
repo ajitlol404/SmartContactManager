@@ -86,12 +86,6 @@ public class Contact
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	@Override
-	public String toString() {
-		return "Contact [cid=" + cid + ", name=" + name + ", secondName=" + secondName + ", work=" + work + ", email="
-				+ email + ", phone=" + phone + ", image=" + image + ", description=" + description + ", user=" + user
-				+ "]";
-	}
 	
 	
 	

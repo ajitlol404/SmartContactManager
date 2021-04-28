@@ -7,6 +7,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.Principal;
 
+import javax.servlet.http.HttpSession;
+
+import com.springboot.Helper.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
@@ -24,73 +27,73 @@ import com.springboot.Repository.UserRepository;
 
 @Controller
 @RequestMapping("/user")
-public class UserController 
-{
+public class UserController {
 	@Autowired
 	public UserRepository userRepo;
-	
-	//method for adding common data to response
+
+	// method for adding common data to response
 	@ModelAttribute
-	public void addCommonData(Model model,Principal principal)
-	{
+	public void addCommonData(Model model, Principal principal) {
 
 		String userName = principal.getName();
-		System.out.println("Username: "+userName);
-		
+		System.out.println("Username: " + userName);
+
 		User userByUserName = userRepo.getUserByUserName(userName);
-		
-		System.out.println("User: - "+userByUserName);
-		model.addAttribute("user",userByUserName);
-		
+
+		System.out.println("User: - " + userByUserName);
+		model.addAttribute("user", userByUserName);
+
 	}
-	
+
+	// dashboard home
 	@GetMapping("/index")
-	public String userdashboard(Model model,Principal principal)
-	{
+	public String userdashboard(Model model, Principal principal) {
 		return "normal/user_dashboard";
 	}
-	
+
 	@GetMapping("/addContact")
-	public String openAddContact(Model model)
-	{
+	public String openAddContact(Model model) {
 		model.addAttribute("title", "Add Contact");
 		model.addAttribute("contact", new Contact());
 		return "normal/addContactForm";
 	}
-	
+
 	@PostMapping("/process-contact")
-	public String processContact(@ModelAttribute Contact contact,@RequestParam("image") MultipartFile file,Principal principal)
-	{
+	public String processContact(@ModelAttribute Contact contact, @RequestParam("profileImage") MultipartFile file,
+			Principal principal, HttpSession session) {
+
 		try {
 			String name = principal.getName();
 			User user = this.userRepo.getUserByUserName(name);
-			
-			//processing and uploading file
-			if (file.isEmpty()) 
-			{	
-				//if file is empty then try message
-			}
-			else {
-				//file the file to the folder and update the name to contact
+
+			// processing and uploading file
+			if (file.isEmpty()) {
+				// if file is empty then try message
+			} else {
+				// file the file to the folder and update the name to contact
 				contact.setImage(file.getOriginalFilename());
-				
+
 				File file2 = new ClassPathResource("static/image").getFile();
-				Path path = Paths.get(file2.getAbsolutePath()+File.separator+file.getOriginalFilename());
-				
+				Path path = Paths.get(file2.getAbsolutePath() + File.separator + file.getOriginalFilename());
+
 				Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 			}
-			
-			contact.setUser(user);
+
 			user.getContact().add(contact);
+			contact.setUser(user);
 			
-			
+
 			this.userRepo.save(user);
-			
+
 			System.out.println("Added to database");
-		}catch(Exception exception)
-		{
+
+			// message success
+			session.setAttribute("message", new Message("Your Contact is added succesfully", "success"));
+		} catch (Exception exception) {
 			exception.printStackTrace();
+			session.setAttribute("message", new Message("Something went wrong", "danger"));
 		}
+
 		return "normal/addContactForm";
 	}
 }
