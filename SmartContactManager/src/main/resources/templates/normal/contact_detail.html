@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="normal/base::layout(~{::section})">
+<head>
+<meta charset="ISO-8859-1">
+<title th:text="${title}">About</title>
+</head>
+<body>
+
+<section>
+	<h1>Show Contact Details: -</h1>
+	<div class="card" style="background: white;">
+		<img class="myProfile" style="width: 100px; height: 100px;" th:src="@{'/image/'+${contact.image}}" alt="profilephoto" />
+	
+	</div>
+</section>
+
+</body>
+</html>
