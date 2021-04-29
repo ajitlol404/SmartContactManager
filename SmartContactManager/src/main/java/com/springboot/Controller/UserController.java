@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
 
 import com.springboot.Helper.Message;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ import com.springboot.Repository.UserRepository;
 public class UserController {
 	@Autowired
 	public UserRepository userRepo;
-	
+
 	@Autowired
 	public ContactRepository contactRepo;
 
@@ -91,7 +92,6 @@ public class UserController {
 
 			user.getContact().add(contact);
 			contact.setUser(user);
-			
 
 			this.userRepo.save(user);
 
@@ -106,42 +106,118 @@ public class UserController {
 
 		return "normal/addContactForm";
 	}
-	
 
 	@GetMapping("/show-contact/{page}")
-	public String showContact(@PathVariable("page")Integer page, Model model,Principal principal)
-	{
+	public String showContact(@PathVariable("page") Integer page, Model model, Principal principal) {
 		model.addAttribute("title", "Show Contact");
 		String name = principal.getName();
 		User user = this.userRepo.getUserByUserName(name);
-		//currentpage-page and contact per page-5
+		// currentpage-page and contact per page-5
 		PageRequest pageable = PageRequest.of(page, 5);
-		Page<Contact> contacts = this.contactRepo.findContactsByUser(user.getUid(),pageable);		
-		
-		
+		Page<Contact> contacts = this.contactRepo.findContactsByUser(user.getUid(), pageable);
+
 		model.addAttribute("contacts", contacts);
 		model.addAttribute("currentPage", page);
 		model.addAttribute("totalPages", contacts.getTotalPages());
-		
-		
-		
+
 		return "normal/showContact";
-		
+
 	}
-	
-	
-	//showing specific user details
+
+	// showing specific user details
 	@RequestMapping("/{cid}/contact")
-	public String showContactDetails(@PathVariable("cid")Long cid,Model model)
-	{
-		
+	public String showContactDetails(@PathVariable("cid") Long cid, Model model, Principal principal) {
+
 		Optional<Contact> findById = contactRepo.findById(cid);
-		
-		Contact contact=findById.get();
-		
-		model.addAttribute("contact", contact);
+		Contact contact = findById.get();
+
+		String name = principal.getName();
+		User UserName = userRepo.getUserByUserName(name);
+
+		if (UserName.getUid() == contact.getUser().getUid()) {
+			model.addAttribute("contact", contact);
+		}
+
 		System.out.println(cid);
 		return "normal/contact_detail";
-		
+
 	}
+
+	// deleting contact
+	@GetMapping("/delete/{cid}")
+	@Transactional
+	public String delteContact(@PathVariable("cid") Long cid, Principal principal,HttpSession session) {
+		Optional<Contact> contactdel = contactRepo.findById(cid);
+		Contact contact = contactdel.get();
+		
+		User user = userRepo.getUserByUserName(principal.getName());
+		user.getContact().remove(contact);
+		userRepo.save(user);
+
+		session.setAttribute("message", new Message("Contact deleted succesfully", "success"));
+		return "redirect:/user/show-contact/0";
+
+	}
+
+	// open update form handler contact
+	@PostMapping("/update-contact/{cid}")
+	public String updateForm(@PathVariable("cid") Long cid, Model model) {
+		model.addAttribute("title", "Update Contact");
+		Contact contact = contactRepo.findById(cid).get();
+
+		model.addAttribute("contact", contact);
+
+		return "normal/update_form";
+
+	}
+
+	// update contact handler
+	@PostMapping("/process-update")
+	public String updateHandler(@ModelAttribute Contact contact, @RequestParam("profileImage") MultipartFile file,
+			Model model, HttpSession session,Principal principal) {
+		
+		
+		try {
+			
+			Contact oldContact = contactRepo.findById(contact.getCid()).get();
+			
+			// image
+			if (!file.isEmpty()) {
+				//delete old photo
+				File deletefile = new ClassPathResource("static/image").getFile();
+				File file1=new File(deletefile, oldContact.getImage());
+				file1.delete();
+				
+				//update new photo
+				File file2 = new ClassPathResource("static/image").getFile();
+				Path path = Paths.get(file2.getAbsolutePath() + File.separator + file.getOriginalFilename());
+
+				Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+				
+				contact.setImage(file.getOriginalFilename());
+			}
+			else
+			{
+				contact.setImage(oldContact.getImage());
+			}
+			User userName = userRepo.getUserByUserName(principal.getName());
+			contactRepo.save(contact);
+
+			session.setAttribute("message", new Message("Contact Updated", "success"));
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "redirect:/user/"+contact.getCid()+"/contact";
+
+	}
+	
+	//profile
+	@GetMapping("/profile")
+	public String profile(Model model)
+	{
+		model.addAttribute("title", "Profile Page");
+		return "normal/profile";
+	}
+
 }

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="normal/base::layout(~{::section})">
+<head>
+<meta charset="ISO-8859-1">
+<title th:text="${title}">About</title>
+</head>
+<body>
+
+	<section>
+
+		<h2 class="text-center">Update Contact</h2>
+
+		<div class="container-fluid mt-1">
+
+			<div class="row" style="background: white;">
+
+				<div class="col-md-10 offset-md-1">
+					<form th:object="${contact}" enctype="multipart/form-data"
+						method="post" th:action="@{/user/process-update}" class="mt-2">
+<input type="hidden"  th:value="${contact.cid}"/>
+						<div class="form-group">
+							<label>Name</label> <input type="text" class="form-control" th:value="${contact.name}"
+								placeholder="Enter name here" id="name" name="name" required>
+						</div>
+
+
+						<div class="form-group">
+							<label>Second Name</label> <input type="text"  th:value="${contact.secondName}"
+								class="form-control" placeholder="Enter second name here"
+								id="secondname" name="secondName" required>
+						</div>
+
+						<div class="form-group">
+							<label>Phone Number</label> <input type="number"  th:value="${contact.phone}"
+								class="form-control" placeholder="Enter phone number here"
+								id="phnumber" name="phone" required>
+						</div>
+
+						<div class="form-group">
+							<label>Work</label> <input type="text" class="form-control"  th:value="${contact.work}"
+								placeholder="Enter work type here" id="work" name="work"
+								required>
+						</div>
+
+
+						<div class="form-group">
+							<label>Email</label> <input type="email" class="form-control"  th:value="${contact.email}"
+								placeholder="Enter email here" id="email" name="email" required>
+						</div>
+
+						<div class="form-group">
+							<label>Description</label>
+							<textarea class="form-control" id="Description" rows="3"  th:text="${contact.description}"
+								placeholder="Enter description here" name="description" required></textarea>
+						</div>
+						
+						<div class="container">
+						<img src="" th:src="@{'/image/'+${contact.image}}" alt="" style="width: 100px; height: 100px;" />
+						</div>
+						
+						<label>Choose Image</label>
+						<div class="custom-file">
+
+							<input type="file" id="customFile" name="profileImage">
+
+						</div>
+
+						<br> <br>
+						<div>
+							<button type="submit" class="btn btn-primary">Update</button>
+						</div>
+
+
+					</form>
+				</div>
+			</div>
+
+		</div>
+
+
+	</section>
+
+</body>
+</html>

@@ -86,6 +86,12 @@ public class Contact
 		super();
 		// TODO Auto-generated constructor stub
 	}
+	@Override
+	public boolean equals(Object obj) {
+		// TODO Auto-generated method stub
+		return this.cid==((Contact)obj).getCid();
+	}
+	
 	
 	
 	

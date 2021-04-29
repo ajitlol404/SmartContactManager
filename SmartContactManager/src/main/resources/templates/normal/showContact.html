@@ -29,8 +29,10 @@
 							<td><a th:href="@{'/user/'+${c.cid}+'/contact'}"><span  th:text="${c.email}"></span></a></td>
 							<td th:text="${c.phone}">Phone</td>
 							<td>
-								<button class="btn btn-small btn-danger">Delete</button>
-								<button class="btn btn-small btn-primary">Update</button>
+								<a th:onclick="|deleteContact(${c.cid})|"><button class="btn btn-small btn-danger">Delete</button></a>
+								<form th:action="'/user/update-contact/'+${c.cid}" method="post">
+								<button type="submit" class="btn btn-small btn-primary">Update</button>
+								</form>
 							</td>
 							<td>
 						</tr>

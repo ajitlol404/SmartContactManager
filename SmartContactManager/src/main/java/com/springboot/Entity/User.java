@@ -35,7 +35,7 @@ public class User {
 	@Column(length = 200)
 	private String about;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user",orphanRemoval = true)
 	private List<Contact> contact = new ArrayList<>();
 
 	public User() {
