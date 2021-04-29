@@ -50,3 +50,18 @@ body {
 	object-fit:cover;
 	border-radius:50%; 
 }
+/* ---------------------------------------------------------------------------------------------- */
+
+/*search css*/
+.search-container{
+	position: relative;
+	
+}
+.search-result{
+	position: absolute;
+	background: white;
+	width: 100%;
+	padding: 5px;
+	border: 1px solid black;
+	display: none;
+}

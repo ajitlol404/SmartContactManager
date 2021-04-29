@@ -9,10 +9,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.springboot.Entity.Contact;
+import com.springboot.Entity.User;
 
 public interface ContactRepository extends JpaRepository<Contact, Long> {
-	@Query("from Contact as c where c.user.id=:userId")//current page and contact per page 5
-public Page<Contact> findContactsByUser(@Param("userId")Long userId,Pageable pageable);
-	
-	
+	@Query("from Contact as c where c.user.id=:userId") // current page and contact per page 5
+	public Page<Contact> findContactsByUser(@Param("userId") Long userId, Pageable pageable);
+
+	//for search
+	public List<Contact> findByNameContainingAndUser(String keyword,User user);
 }
