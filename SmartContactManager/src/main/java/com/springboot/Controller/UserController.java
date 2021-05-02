@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,6 +41,9 @@ public class UserController {
 
 	@Autowired
 	public ContactRepository contactRepo;
+	
+	@Autowired
+	public BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	// method for adding common data to response
 	@ModelAttribute
@@ -218,6 +222,39 @@ public class UserController {
 	{
 		model.addAttribute("title", "Profile Page");
 		return "normal/profile";
+	}
+	
+	//setting 
+	@GetMapping("/setting")
+	public String settings(Model model)
+	{
+		model.addAttribute("title", "Setting");
+		return "normal/setting";
+	}
+	
+	//change password
+	@PostMapping("/change-password")
+	public String changePassword(@RequestParam("oldPassword") String oldPassword, @RequestParam("newPassword")String newPassword,Principal principal,HttpSession session)
+	{
+		System.out.println(oldPassword+" "+newPassword);
+		
+		String name = principal.getName();//user name mil gaya
+		User currentuser = userRepo.getUserByUserName(name);//user repo ko fetch karke sakte hai 
+		System.out.println(currentuser.getPassword());
+		
+		if(bCryptPasswordEncoder.matches(oldPassword, currentuser.getPassword()))
+		{
+			//change the password
+			currentuser.setPassword(bCryptPasswordEncoder.encode(newPassword));
+			userRepo.save(currentuser);
+			session.setAttribute("message", new Message("Password Successfully changed", "success"));
+			return "redirect:/user/setting";
+		}
+		else {
+			session.setAttribute("message", new Message("Wrong passworld - Old !!", "danger"));
+			return "redirect:/user/setting";
+		}
+		
 	}
 
 }
